@@ -1,29 +1,36 @@
-import schedule
-import time
+#!/usr/bin/env python3
+"""
+FDF自动检查和提交脚本
+每小时运行一次：更新数据 + 检查变更 + 自动提交推送
+"""
+
 import subprocess
 import sys
-import os
+import time
 import random
 from datetime import datetime, timedelta
+from pathlib import Path
+
+# fdf项目目录
+FDF_DIR = Path(__file__).parent.parent
+SCRIPTS_DIR = FDF_DIR / 'scripts'
+DATA_DIR = FDF_DIR / 'data'
 
 
 def get_random_offset():
-    """
-    每次生成新的随机偏移时间(30-90秒)
-    确保每次执行时间都不一样
-    """
-    return random.randint(30, 90)
+    """每次生成新的随机偏移时间(0-30秒)"""
+    return random.randint(0, 30)
 
 
 def calculate_next_run_time():
-    """计算下一次执行时间(每小时的随机时间)"""
+    """计算下一次执行时间(每小时的整点附近)"""
     now = datetime.now()
 
     # 每次生成新的随机偏移
     offset_seconds = get_random_offset()
 
-    # 计算下一个小时的00:XX时间
-    if now.minute < 1:
+    # 计算下一个小时的整点
+    if now.minute == 0 and now.second < 30:
         # 如果在整点附近,就在当前小时执行
         next_hour = now.replace(minute=0, second=0, microsecond=0)
     else:
@@ -36,60 +43,114 @@ def calculate_next_run_time():
     return next_run
 
 
-def run_script():
-    """执行目标Python脚本的函数"""
-    script_path = "check_account_balance.py"
+def run_update():
+    """运行数据更新脚本"""
+    script_path = SCRIPTS_DIR / 'update.py'
 
-    # 记录开始时间
     start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[{start_time}] 开始执行脚本: {script_path}")
+    print(f"\n{'='*60}")
+    print(f"[{start_time}] 开始数据更新")
+    print(f"{'='*60}")
 
     try:
-        # 执行Python脚本
-        result = subprocess.run([sys.executable, script_path],
-                                capture_output=True,
-                                text=True,
-                                encoding='utf-8')
+        result = subprocess.run(
+            [sys.executable, str(script_path)],
+            cwd=str(FDF_DIR),
+            capture_output=True,
+            text=True,
+            timeout=1800  # 30分钟超时
+        )
 
-        # 输出脚本的执行结果
         if result.stdout:
-            print("脚本输出:")
             print(result.stdout)
 
         if result.stderr:
-            print("脚本错误:")
-            print(result.stderr)
+            print("错误输出:", result.stderr)
 
-        # 检查返回码
         if result.returncode == 0:
-            print(f"✅ 脚本执行成功 (返回码: {result.returncode})")
+            print("✅ 数据更新成功")
+            return True
         else:
-            print(f"❌ 脚本执行失败 (返回码: {result.returncode})")
+            print(f"❌ 数据更新失败 (返回码: {result.returncode})")
+            return False
 
-    except FileNotFoundError:
-        print(f"❌ 错误: 找不到脚本文件 {script_path}")
+    except subprocess.TimeoutExpired:
+        print("❌ 数据更新超时")
+        return False
     except Exception as e:
-        print(f"❌ 执行脚本时发生错误: {str(e)}")
+        print(f"❌ 数据更新异常: {e}")
+        return False
 
-    # 记录结束时间
-    end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"[{end_time}] 脚本执行完成\n")
+
+def check_and_commit():
+    """检查是否有数据变更，如果有则提交并推送"""
+    print(f"\n{'='*60}")
+    print("检查数据变更...")
+    print(f"{'='*60}")
+
+    try:
+        # 检查data目录是否有变更
+        result = subprocess.run(
+            ['git', 'diff', '--quiet', 'data/'],
+            cwd=str(FDF_DIR),
+            capture_output=True
+        )
+
+        # 如果有变更（返回码非0）
+        if result.returncode != 0:
+            print("✅ 检测到数据变更，开始提交...")
+
+            # 添加data目录
+            subprocess.run(['git', 'add', 'data/'], cwd=str(FDF_DIR))
+
+            # 提交
+            commit_msg = f"更新数据 [skip_ci]\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>"
+            subprocess.run(
+                ['git', 'commit', '-m', commit_msg],
+                cwd=str(FDF_DIR)
+            )
+            print("✅ 数据已提交")
+
+            # 推送
+            print("⬆️  推送到远程仓库...")
+            push_result = subprocess.run(
+                ['git', 'push'],
+                cwd=str(FDF_DIR),
+                capture_output=True,
+                text=True
+            )
+
+            if push_result.returncode == 0:
+                print("✅ 推送成功")
+                return True
+            else:
+                print(f"❌ 推送失败: {push_result.stderr}")
+                return False
+        else:
+            print("ℹ️  没有数据变更，跳过提交")
+            return True
+
+    except Exception as e:
+        print(f"❌ 提交异常: {e}")
+        return False
 
 
 def main():
-    """主函数，设置定时任务"""
-    print("=== Python 定时任务调度器 ===")
-    print("目标脚本: check_account_balance.py")
-    print("执行频率: 每小时执行一次(整点后30-90秒之间的随机时间)")
-    print("=" * 40)
+    """主函数"""
+    print("\n" + "="*60)
+    print("🔄 FDF 自动检查和提交服务")
+    print(f"启动时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print("执行频率: 每小时整点附近运行一次")
+    print("="*60)
 
-    # 立即执行一次（可选）
-    print("正在执行第一次任务...")
-    run_script()
+    # 立即执行第一次
+    update_success = run_update()
+    if update_success:
+        check_and_commit()
 
-    print("定时任务已启动，按 Ctrl+C 停止...")
+    print("\n✅ 定时任务已启动，按 Ctrl+C 停止...")
 
-    # 持续运行，计算并等待下次执行时间
+    # 持续运行
     while True:
         try:
             # 计算下次执行时间
@@ -98,24 +159,28 @@ def main():
             wait_seconds = (next_run - now).total_seconds()
 
             if wait_seconds > 0:
-                print(f"\n下次执行时间: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
-                print(f"等待时间: {int(wait_seconds)}秒 ({int(wait_seconds/60)}分{wait_seconds%60:.0f}秒)")
+                print(f"\n⏰ 下次执行: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
+                print(f"⏳ 等待: {int(wait_seconds)}秒 ({int(wait_seconds/60)}分{int(wait_seconds%60)}秒)")
 
                 # 等待到下次执行时间
                 time.sleep(wait_seconds)
 
-                # 执行脚本
-                run_script()
+                # 执行更新和提交
+                update_success = run_update()
+                if update_success:
+                    check_and_commit()
             else:
                 # 如果计算时间已过,立即执行并重新计算
-                print("执行时间已到,开始执行...")
-                run_script()
+                print("⚠️  执行时间已到,开始执行...")
+                update_success = run_update()
+                if update_success:
+                    check_and_commit()
 
         except KeyboardInterrupt:
-            print("\n用户中断，停止定时任务...")
+            print("\n\n⚠️  用户中断，停止定时任务...")
             break
         except Exception as e:
-            print(f"定时任务异常: {str(e)}")
+            print(f"\n❌ 定时任务异常: {e}")
             time.sleep(60)
 
 
