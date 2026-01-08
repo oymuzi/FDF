@@ -108,7 +108,35 @@ function createChart() {
     const ctx = document.getElementById('mainChart')?.getContext('2d');
     if (!ctx) return;
 
-    const labels = mzData.map(d => formatTime(d.时间));
+    // 对齐两个数据集，使用共同的时间范围
+    const mzStartTime = mzData[0]?.时间.getTime();
+    const mzEndTime = mzData[mzData.length - 1]?.时间.getTime();
+    const wjStartTime = wjData[0]?.时间.getTime();
+    const wjEndTime = wjData[wjData.length - 1]?.时间.getTime();
+
+    // 使用较晚的开始时间和较早的结束时间
+    const alignedStart = Math.max(mzStartTime, wjStartTime);
+    const alignedEnd = Math.min(mzEndTime, wjEndTime);
+
+    // 过滤数据，确保在共同时间范围内
+    const alignedMz = mzData.filter(d => d.时间.getTime() >= alignedStart && d.时间.getTime() <= alignedEnd);
+    const alignedWj = wjData.filter(d => d.时间.getTime() >= alignedStart && d.时间.getTime() <= alignedEnd);
+
+    // 使用两个数据集的时间并集作为标签（按时间排序）
+    const allTimes = new Set();
+    alignedMz.forEach(d => allTimes.add(d.时间.getTime()));
+    alignedWj.forEach(d => allTimes.add(d.时间.getTime()));
+
+    const sortedTimes = Array.from(allTimes).sort((a, b) => a - b);
+    const labels = sortedTimes.map(t => formatTime(new Date(t)));
+
+    // 创建时间到数据的映射
+    const mzMap = new Map(alignedMz.map(d => [d.时间.getTime(), d.总价值]));
+    const wjMap = new Map(alignedWj.map(d => [d.时间.getTime(), d.总价值]));
+
+    // 生成对齐的数据数组
+    const mzAlignedData = sortedTimes.map(t => mzMap.get(t) || null);
+    const wjAlignedData = sortedTimes.map(t => wjMap.get(t) || null);
 
     mainChart = new Chart(ctx, {
         type: 'line',
@@ -117,7 +145,7 @@ function createChart() {
             datasets: [
                 {
                     label: 'MZ',
-                    data: mzData.map(d => d.总价值),
+                    data: mzAlignedData,
                     borderColor: '#6366f1',
                     backgroundColor: 'rgba(99, 102, 241, 0.1)',
                     borderWidth: 3,
@@ -125,11 +153,12 @@ function createChart() {
                     tension: 0.4,
                     pointRadius: 0,
                     pointHoverRadius: 6,
-                    pointHoverBackgroundColor: '#6366f1'
+                    pointHoverBackgroundColor: '#6366f1',
+                    spanGaps: true  // 连接空值
                 },
                 {
                     label: 'George',
-                    data: wjData.map(d => d.总价值),
+                    data: wjAlignedData,
                     borderColor: '#8b5cf6',
                     backgroundColor: 'rgba(139, 92, 246, 0.1)',
                     borderWidth: 3,
@@ -137,7 +166,8 @@ function createChart() {
                     tension: 0.4,
                     pointRadius: 0,
                     pointHoverRadius: 6,
-                    pointHoverBackgroundColor: '#8b5cf6'
+                    pointHoverBackgroundColor: '#8b5cf6',
+                    spanGaps: true  // 连接空值
                 }
             ]
         },
@@ -159,7 +189,10 @@ function createChart() {
                     padding: 12,
                     cornerRadius: 8,
                     callbacks: {
-                        label: ctx => `${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}`
+                        label: ctx => {
+                            if (ctx.parsed.y === null) return null;
+                            return `${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}`;
+                        }
                     }
                 }
             },

@@ -3,7 +3,7 @@ name: 更新数据
 on:
   # 每小时运行一次
   schedule:
-    - cron: '30 * * * *'
+    - cron: '0 * * * *'
 
   # 手动触发
   workflow_dispatch:
