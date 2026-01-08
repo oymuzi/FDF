@@ -116,8 +116,14 @@ def copy_csv_files():
                 target.write_text(source_content, encoding='utf-8-sig')
                 print(f"✅ {name}数据已创建 (1 行)")
             else:
+                # 检查目标文件最后是否有换行符
+                target_content = target.read_text(encoding='utf-8-sig')
+                needs_newline = not target_content.endswith('\n')
+
                 # 追加最新的一行数据（不包含表头）
                 with open(target, 'a', encoding='utf-8-sig') as f:
+                    if needs_newline:
+                        f.write('\n')
                     f.write(latest_line + '\n')
                 print(f"✅ {name}数据已追加 (1 行)")
 

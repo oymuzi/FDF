@@ -176,24 +176,7 @@ function createChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            animation: {
-                duration: 1000,
-                easing: 'easeInOutQuart',
-                // 从左到右绘制动画
-                x: {
-                    type: 'number',
-                    easing: 'linear',
-                    duration: 1000,
-                    from: NaN,
-                    delay(ctx) {
-                        if (ctx.type !== 'data' || ctx.xStarted) {
-                            return 0;
-                        }
-                        ctx.xStarted = true;
-                        return ctx.index * 20; // 每个点延迟20ms
-                    }
-                }
-            },
+            animation: false,
             interaction: {
                 mode: 'index',
                 intersect: false
