@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 """
 FDF数据更新脚本
-在fdf项目内完成所有操作:运行账号检查 + 生成CSV + 复制到data目录
+直接在data目录写入CSV数据
 """
 
 import subprocess
 import sys
 from pathlib import Path
 from datetime import datetime
-import shutil
 
 # fdf项目目录
 FDF_DIR = Path(__file__).parent.parent
@@ -70,70 +69,6 @@ def run_account_checks():
     return all_success
 
 
-def copy_csv_files():
-    """将生成的CSV文件复制到data目录（追加最新一条数据）"""
-    print(f"\n📁 复制CSV文件到data目录... {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-
-    # 确保data目录存在
-    DATA_DIR.mkdir(exist_ok=True)
-
-    # CSV文件路径
-    mz_source = FDF_DIR / 'check_history.csv'
-    mz_target = DATA_DIR / 'mz_history.csv'
-    wj_source = FDF_DIR / 'check_history_wj.csv'
-    wj_target = DATA_DIR / 'wj_history.csv'
-
-    files_to_copy = [
-        (mz_source, mz_target, 'MZ'),
-        (wj_source, wj_target, 'George'),
-    ]
-
-    all_success = True
-
-    for source, target, name in files_to_copy:
-        if not source.exists():
-            print(f"⚠️  {name}源文件不存在: {source}")
-            all_success = False
-            continue
-
-        try:
-            # 读取源文件内容
-            source_content = source.read_text(encoding='utf-8-sig')
-            source_lines = source_content.strip().split('\n')
-
-            # 跳过表头，只保留数据行
-            data_lines = source_lines[1:] if len(source_lines) > 1 else []
-
-            if not data_lines:
-                print(f"⚠️  {name}源文件没有数据")
-                continue
-
-            # 只取最后一行（最新数据）
-            latest_line = data_lines[-1]
-
-            # 如果目标文件不存在，创建并写入表头和最新数据
-            if not target.exists():
-                target.write_text(source_content, encoding='utf-8-sig')
-                print(f"✅ {name}数据已创建 (1 行)")
-            else:
-                # 检查目标文件最后是否有换行符
-                target_content = target.read_text(encoding='utf-8-sig')
-                needs_newline = not target_content.endswith('\n')
-
-                # 追加最新的一行数据（不包含表头）
-                with open(target, 'a', encoding='utf-8-sig') as f:
-                    if needs_newline:
-                        f.write('\n')
-                    f.write(latest_line + '\n')
-                print(f"✅ {name}数据已追加 (1 行)")
-
-        except Exception as e:
-            print(f"❌ 复制{name}数据失败: {e}")
-            all_success = False
-
-    return all_success
-
-
 def main():
     """主函数"""
     print("\n" + "="*60)
@@ -141,32 +76,20 @@ def main():
     print(f"⏰ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("="*60)
 
-    # 步骤1: 运行账号检查
+    # 确保data目录存在
+    DATA_DIR.mkdir(exist_ok=True)
+
+    # 运行账号检查（直接写入data目录）
     check_success = run_account_checks()
-
-    # 步骤2: 复制CSV文件
-    copy_success = copy_csv_files()
-
-    # 步骤3: 清理临时文件（根目录的CSV）
-    if copy_success:
-        temp_files = [
-            FDF_DIR / 'check_history.csv',
-            FDF_DIR / 'check_history_wj.csv'
-        ]
-        for temp_file in temp_files:
-            if temp_file.exists():
-                temp_file.unlink()
-        print("🗑️  临时文件已清理")
 
     # 汇总结果
     print("\n" + "="*60)
     print("📋 执行结果")
     print("="*60)
     print(f"账号检查: {'✅ 成功' if check_success else '❌ 失败'}")
-    print(f"文件复制: {'✅ 成功' if copy_success else '❌ 失败'}")
     print("="*60)
 
-    if copy_success:
+    if check_success:
         print("\n✅ 数据更新完成!")
         return 0
     else:

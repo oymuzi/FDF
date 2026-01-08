@@ -38,11 +38,7 @@ if [ $? -eq 0 ]; then
 
     # 提交
     echo -e "${BLUE}💾 创建提交...${NC}"
-    git commit -m "更新数据 [skip ci]
-
-🤖 Generated with Claude Code
-Co-Authored-By: Claude <noreply@anthropic.com>"
-
+    git commit -m "更新数据 [skip ci]"
     # 推送
     echo -e "${BLUE}⬆️  推送到远程仓库...${NC}"
     git push

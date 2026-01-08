@@ -239,7 +239,7 @@ def get_wallet_balance(wallet, max_retries=5, retry_interval=5):
 
 
 def write_balance_history(balance: float, gold_balance: float, holding_value: float,
-                          csv_path: str = "check_history.csv") -> None:
+                          csv_path: str = "data/mz_history.csv") -> None:
     """
     写入余额历史记录到CSV文件
 
@@ -247,7 +247,7 @@ def write_balance_history(balance: float, gold_balance: float, holding_value: fl
         balance: 链上余额
         gold_balance: 金币价值
         holding_value: 持有价值
-        csv_path: CSV文件路径，默认为当前目录下的check_history.csv
+        csv_path: CSV文件路径，默认为data目录下的mz_history.csv
     """
     # 计算总价值
     total_value = balance + gold_balance + holding_value
@@ -390,19 +390,8 @@ def get_yesterday_last_record(records: list) -> Optional[float]:
 def send(balance, gold_balance, holding_value):
     total = balance + gold_balance + holding_value
 
-    # 读取历史记录并计算涨跌幅（从data目录读取完整历史）
+    # 读取历史记录并计算涨跌幅
     records = read_balance_history("data/mz_history.csv")
-
-    # 把当前数据加到records里（用于计算涨跌幅）
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    current_record = {
-        "时间": current_time,
-        "链上余额": f"{balance:.2f}",
-        "金币价值": f"{gold_balance:.2f}",
-        "持有价值": f"{holding_value:.2f}",
-        "总价值": f"{total:.2f}"
-    }
-    records.append(current_record)
 
     # 计算今天相比昨天最后一次的涨跌幅
     yesterday_last = get_yesterday_last_record(records)
