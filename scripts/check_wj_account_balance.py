@@ -388,6 +388,17 @@ def send(balance, gold_balance, holding_value):
     # 读取历史记录并计算涨跌幅（从data目录读取完整历史）
     records = read_balance_history("data/wj_history.csv")
 
+    # 把当前数据加到records里（用于计算涨跌幅）
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    current_record = {
+        "时间": current_time,
+        "链上余额": f"{balance:.2f}",
+        "金币价值": f"{gold_balance:.2f}",
+        "持有价值": f"{holding_value:.2f}",
+        "总价值": f"{total:.2f}"
+    }
+    records.append(current_record)
+
     # 计算今天相比昨天最后一次的涨跌幅
     yesterday_last = get_yesterday_last_record(records)
     if yesterday_last is not None:
