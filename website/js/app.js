@@ -84,25 +84,57 @@ function updateStats() {
     const mz = mzData[mzData.length - 1];
     const wj = wjData[wjData.length - 1];
 
+    // 获取北京时间昨天最后一次的数据（00:00之前最后一条）
+    const mzYesterday = getYesterdayLastValue(mzData);
+    const wjYesterday = getYesterdayLastValue(wjData);
+
     // MZ
     document.getElementById('mzValue').textContent = `$${formatNumber(mz.总价值)}`;
-    const mzChangeVal = ((mz.总价值 - (mzData[mzData.length-2]?.总价值||mz.总价值)) / (mzData[mzData.length-2]?.总价值||1) * 100).toFixed(2);
+    const mzChangeVal = mzYesterday
+        ? ((mz.总价值 - mzYesterday.总价值) / mzYesterday.总价值 * 100).toFixed(2)
+        : '0.00';
     updateStatChange('mzChange', mzChangeVal);
 
     // WJ
     document.getElementById('wjValue').textContent = `$${formatNumber(wj.总价值)}`;
-    const wjChangeVal = ((wj.总价值 - (wjData[wjData.length-2]?.总价值||wj.总价值)) / (wjData[wjData.length-2]?.总价值||1) * 100).toFixed(2);
+    const wjChangeVal = wjYesterday
+        ? ((wj.总价值 - wjYesterday.总价值) / wjYesterday.总价值 * 100).toFixed(2)
+        : '0.00';
     updateStatChange('wjChange', wjChangeVal);
 
     // Time
     document.getElementById('updateTime').textContent = `Updated: ${formatTime(mz.时间)}`;
 }
 
+// 获取昨天最后一次的值（北京时间00:00之前）
+function getYesterdayLastValue(data) {
+    if (!data || data.length === 0) return null;
+
+    const lastEntry = data[data.length - 1];
+    const lastTime = lastEntry.时间;
+
+    // 获取当前时间的日期
+    const currentDate = new Date(lastTime);
+    const todayDate = new Date(currentDate);
+    todayDate.setHours(0, 0, 0, 0); // 今天00:00
+
+    // 从后往前找，找到今天00:00之前的最后一条数据
+    for (let i = data.length - 1; i >= 0; i--) {
+        const entryTime = new Date(data[i].时间);
+        if (entryTime < todayDate) {
+            return data[i];
+        }
+    }
+
+    return null;
+}
+
 function updateStatChange(id, val) {
     const el = document.getElementById(id);
     const num = parseFloat(val);
-    el.textContent = `${num > 0 ? '+' : ''}${val}%`;
-    el.className = `stat-change ${num >= 0 ? 'positive' : 'negative'}`;
+    const icon = num > 0 ? '↑' : num < 0 ? '↓' : '→';
+    el.textContent = `${icon} ${Math.abs(num)}%`;
+    el.className = `stat-change ${num > 0 ? 'positive' : num < 0 ? 'negative' : 'neutral'}`;
 }
 
 // Create chart
@@ -191,6 +223,8 @@ function createChart() {
                     borderWidth: 1,
                     padding: 12,
                     cornerRadius: 8,
+                    mode: 'index',
+                    intersect: false,
                     callbacks: {
                         label: function(context) {
                             const datasetLabel = context.dataset.label || '';
