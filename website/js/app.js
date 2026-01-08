@@ -176,6 +176,10 @@ function createChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            animation: {
+                duration: 2000,
+                easing: 'easeInOutQuart'
+            },
             interaction: {
                 mode: 'index',
                 intersect: false
@@ -191,9 +195,29 @@ function createChart() {
                     padding: 12,
                     cornerRadius: 8,
                     callbacks: {
-                        label: ctx => {
-                            if (ctx.parsed.y === null) return null;
-                            return `${ctx.dataset.label}: $${ctx.parsed.y.toFixed(2)}`;
+                        label: function(context) {
+                            const datasetLabel = context.dataset.label || '';
+                            let value = context.parsed.y;
+
+                            // 如果当前值为null，向前查找最近的一个非null值
+                            if (value === null || value === undefined) {
+                                const dataIndex = context.dataIndex;
+                                const datasetData = context.dataset.data;
+
+                                // 向前查找最近的有效值
+                                for (let i = dataIndex; i >= 0; i--) {
+                                    if (datasetData[i] !== null && datasetData[i] !== undefined) {
+                                        value = datasetData[i];
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (value === null || value === undefined) {
+                                return `${datasetLabel}: 暂无数据`;
+                            }
+
+                            return `${datasetLabel}: $${value.toFixed(2)}`;
                         }
                     }
                 }

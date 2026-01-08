@@ -71,7 +71,7 @@ def run_account_checks():
 
 
 def copy_csv_files():
-    """将生成的CSV文件复制到data目录（追加模式）"""
+    """将生成的CSV文件复制到data目录（追加最新一条数据）"""
     print(f"\n📁 复制CSV文件到data目录... {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     # 确保data目录存在
@@ -108,16 +108,18 @@ def copy_csv_files():
                 print(f"⚠️  {name}源文件没有数据")
                 continue
 
-            # 如果目标文件不存在，创建并写入表头
+            # 只取最后一行（最新数据）
+            latest_line = data_lines[-1]
+
+            # 如果目标文件不存在，创建并写入表头和最新数据
             if not target.exists():
                 target.write_text(source_content, encoding='utf-8-sig')
-                print(f"✅ {name}数据已创建 ({len(data_lines)} 行)")
+                print(f"✅ {name}数据已创建 (1 行)")
             else:
-                # 追加新数据（不包含表头）
+                # 追加最新的一行数据（不包含表头）
                 with open(target, 'a', encoding='utf-8-sig') as f:
-                    for line in data_lines:
-                        f.write(line + '\n')
-                print(f"✅ {name}数据已追加 ({len(data_lines)} 行)")
+                    f.write(latest_line + '\n')
+                print(f"✅ {name}数据已追加 (1 行)")
 
         except Exception as e:
             print(f"❌ 复制{name}数据失败: {e}")
@@ -138,6 +140,17 @@ def main():
 
     # 步骤2: 复制CSV文件
     copy_success = copy_csv_files()
+
+    # 步骤3: 清理临时文件（根目录的CSV）
+    if copy_success:
+        temp_files = [
+            FDF_DIR / 'check_history.csv',
+            FDF_DIR / 'check_history_wj.csv'
+        ]
+        for temp_file in temp_files:
+            if temp_file.exists():
+                temp_file.unlink()
+        print("🗑️  临时文件已清理")
 
     # 汇总结果
     print("\n" + "="*60)
