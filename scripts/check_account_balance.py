@@ -371,21 +371,17 @@ def get_yesterday_last_record(records: list) -> Optional[float]:
 
     try:
         today = datetime.now().date()
+        yesterday_last_value = None
 
-        # 从后往前遍历，找到昨天最后一条记录
-        for record in reversed(records):
+        for record in records:
             record_time = datetime.strptime(record["时间"], "%Y-%m-%d %H:%M:%S")
             record_date = record_time.date()
 
-            # 如果是昨天的记录，立即返回
+            # 如果是昨天的记录
             if record_date < today:
-                return float(record["总价值"])
+                yesterday_last_value = float(record["总价值"])
 
-        # 如果没找到昨天的记录，返回倒数第二条（前一次记录）
-        if len(records) >= 2:
-            return float(records[-2]["总价值"])
-
-        return None
+        return yesterday_last_value
     except Exception as e:
         print(f"获取昨天最后记录时出错: {e}")
         return None
