@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FDF Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <h1>FDF</h1>
+                    <span class="logo-badge">Dashboard</span>
+                </div>
+                <div class="header-info">
+                    <span class="update-time" id="updateTime">Loading...</span>
+                    <button class="refresh-btn" onclick="refreshData()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 4v6h-6"></path>
+                            <path d="M1 20v-6h6"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card primary">
+                <div class="stat-header">
+                    <span class="stat-label">MZ</span>
+                </div>
+                <div class="stat-value" id="mzValue">$--</div>
+                <div class="stat-change" id="mzChange">--%</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-label">George</span>
+                </div>
+                <div class="stat-value" id="wjValue">$--</div>
+                <div class="stat-change" id="wjChange">--%</div>
+            </div>
+        </div>
+
+        <!-- Chart Section -->
+        <div class="chart-section">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h2>Portfolio Performance</h2>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-dot mz"></span>
+                            <span>MZ</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-dot wj"></span>
+                            <span>George</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="mainChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Built with ❤️ | FDF Dashboard © 2026</p>
+        </footer>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
