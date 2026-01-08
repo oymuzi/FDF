@@ -100,11 +100,11 @@ body {
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 24px;
-    padding: 2.5rem 2rem;
+    padding: 1.5rem 2rem;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
-    min-height: 200px;
+    min-height: 140px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -157,12 +157,12 @@ body {
 .stat-card.primary {
     background: linear-gradient(145deg,
         rgba(99, 102, 241, 0.08) 0%,
-        rgba(139, 92, 246, 0.03) 100%);
+        rgba(99, 102, 241, 0.03) 100%);
     border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
 .stat-card.primary::before {
-    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    background: linear-gradient(90deg, #6366f1, #6366f1);
     opacity: 1;
 }
 
@@ -170,21 +170,21 @@ body {
     background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
 }
 
-/* George 卡片 - 紫色系 */
+/* George 卡片 - 蓝色系（相同） */
 .stat-card:nth-child(2) {
     background: linear-gradient(145deg,
-        rgba(139, 92, 246, 0.08) 0%,
-        rgba(124, 58, 237, 0.03) 100%);
-    border: 1px solid rgba(139, 92, 246, 0.2);
+        rgba(99, 102, 241, 0.08) 0%,
+        rgba(99, 102, 241, 0.03) 100%);
+    border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
 .stat-card:nth-child(2)::before {
-    background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+    background: linear-gradient(90deg, #6366f1, #6366f1);
     opacity: 1;
 }
 
 .stat-card:nth-child(2)::after {
-    background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
 }
 
 /* 卡片头部 */
@@ -199,7 +199,7 @@ body {
 
 .stat-label {
     color: var(--text-secondary);
-    font-size: 0.6875rem;
+    font-size: 0.875rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 1.5px;
@@ -215,7 +215,7 @@ body {
 
 /* 金额 - 超大醒目 */
 .stat-value {
-    font-size: 3rem;
+    font-size: 3.5rem;
     font-weight: 800;
     margin: 0.5rem 0;
     letter-spacing: -2px;
@@ -237,7 +237,7 @@ body {
 
 /* 涨跌幅 - 同样醒目 */
 .stat-change {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
     font-weight: 800;
     display: inline-flex;
     align-items: center;
@@ -265,17 +265,15 @@ body {
     color: #64748b;
 }
 
-/* 在渐变卡片上，涨跌幅使用亮色并带发光 */
+/* 在渐变卡片上，涨跌幅使用亮色 */
 .stat-card.primary .stat-change.positive,
 .stat-card:nth-child(2) .stat-change.positive {
     color: #34d399;
-    filter: drop-shadow(0 0 12px rgba(52, 211, 153, 0.6));
 }
 
 .stat-card.primary .stat-change.negative,
 .stat-card:nth-child(2) .stat-change.negative {
     color: #f87171;
-    filter: drop-shadow(0 0 12px rgba(248, 113, 113, 0.6));
 }
 
 /* Icon */
