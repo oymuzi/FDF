@@ -385,8 +385,8 @@ def get_yesterday_last_record(records: list) -> Optional[float]:
 def send(balance, gold_balance, holding_value):
     total = balance + gold_balance + holding_value
 
-    # 读取历史记录并计算涨跌幅
-    records = read_balance_history()
+    # 读取历史记录并计算涨跌幅（从data目录读取完整历史）
+    records = read_balance_history("data/wj_history.csv")
 
     # 计算今天相比昨天最后一次的涨跌幅
     yesterday_last = get_yesterday_last_record(records)
