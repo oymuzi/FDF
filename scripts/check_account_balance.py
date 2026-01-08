@@ -286,7 +286,7 @@ def write_balance_history(balance: float, gold_balance: float, holding_value: fl
         print(f"错误: 写入文件时发生异常 - {str(e)}")
 
 
-def read_balance_history(csv_path: str = "mz_history.csv") -> list:
+def read_balance_history(csv_path: str = "check_history.csv") -> list:
     """
     读取余额历史记录
 
