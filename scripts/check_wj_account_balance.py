@@ -408,11 +408,11 @@ def send(balance, gold_balance, holding_value):
 
 # 示例使用
 if __name__ == "__main__":
-    owner_account_result = get_usdc_balances(owner_address_list)
-    for addr, bal in owner_account_result.items():
-        if addr != 'total':
-            print(f"{addr} 链上地址余额 {bal:.2f} USDC")
-    owner_total = owner_account_result['total']
+    # owner_account_result = get_usdc_balances(owner_address_list)
+    # for addr, bal in owner_account_result.items():
+    #     if addr != 'total':
+    #         print(f"{addr} 链上地址余额 {bal:.2f} USDC")
+    owner_total = 303 #owner_account_result['total']
     game_account_result = get_usdc_balances(game_wallet_list)
     for addr, bal in game_account_result.items():
         if addr != 'total':
