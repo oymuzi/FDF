@@ -149,6 +149,7 @@ body {
     align-items: center;
     margin-bottom: 1.25rem;
     gap: 0.75rem;
+    position: relative;
 }
 
 .stat-label {
@@ -158,6 +159,89 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.75px;
     font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+}
+
+/* 涨跌幅液态效果容器 */
+.stat-change-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.stat-change {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.4rem 1rem;
+    font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Roboto Mono', monospace;
+    font-feature-settings: 'tnum' 1;
+    white-space: nowrap;
+    flex-shrink: 0;
+    position: relative;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    color: #f1f5f9;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.stat-change::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    padding: 2px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+.stat-change.positive {
+    background: linear-gradient(135deg,
+        rgba(16, 185, 129, 0.25) 0%,
+        rgba(16, 185, 129, 0.15) 50%,
+        rgba(16, 185, 129, 0.2) 100%);
+    border-color: rgba(16, 185, 129, 0.3);
+    box-shadow:
+        0 4px 20px rgba(16, 185, 129, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    color: #d1fae5;
+    text-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+}
+
+.stat-change.negative {
+    background: linear-gradient(135deg,
+        rgba(239, 68, 68, 0.25) 0%,
+        rgba(239, 68, 68, 0.15) 50%,
+        rgba(239, 68, 68, 0.2) 100%);
+    border-color: rgba(239, 68, 68, 0.3);
+    box-shadow:
+        0 4px 20px rgba(239, 68, 68, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    color: #fee2e2;
+    text-shadow: 0 0 20px rgba(239, 68, 68, 0.5);
+}
+
+.stat-change.neutral {
+    background: linear-gradient(135deg,
+        rgba(100, 116, 139, 0.25) 0%,
+        rgba(100, 116, 139, 0.15) 50%,
+        rgba(100, 116, 139, 0.2) 100%);
+    border-color: rgba(100, 116, 139, 0.3);
+    box-shadow:
+        0 4px 20px rgba(100, 116, 139, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    color: #e2e8f0;
+    text-shadow: 0 0 20px rgba(100, 116, 139, 0.5);
 }
 
 .stat-card.primary .stat-label {
@@ -212,60 +296,6 @@ body {
     font-feature-settings: 'tnum' 1;
     white-space: nowrap;
     flex-shrink: 0;
-}
-
-.stat-change.positive {
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
-    border: 1px solid rgba(16, 185, 129, 0.3);
-}
-
-.stat-change.negative {
-    background: rgba(239, 68, 68, 0.15);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-}
-
-.stat-change.neutral {
-    background: rgba(100, 116, 139, 0.15);
-    color: #94a3b8;
-    border: 1px solid rgba(100, 116, 139, 0.3);
-}
-
-.stat-card.primary .stat-change {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.stat-card.primary .stat-change.positive {
-    background: rgba(16, 185, 129, 0.25);
-    color: #10b981;
-    border: 1px solid rgba(16, 185, 129, 0.4);
-}
-
-.stat-card.primary .stat-change.negative {
-    background: rgba(239, 68, 68, 0.25);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.4);
-}
-
-.stat-card:nth-child(2) .stat-change {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.stat-card:nth-child(2) .stat-change.positive {
-    background: rgba(16, 185, 129, 0.25);
-    color: #10b981;
-    border: 1px solid rgba(16, 185, 129, 0.4);
-}
-
-.stat-card:nth-child(2) .stat-change.negative {
-    background: rgba(239, 68, 68, 0.25);
-    color: #ef4444;
-    border: 1px solid rgba(239, 68, 68, 0.4);
 }
 
 /* Chart Section */
