@@ -71,7 +71,7 @@ def run_account_checks():
 
 
 def copy_csv_files():
-    """将生成的CSV文件复制到data目录"""
+    """将生成的CSV文件复制到data目录（追加模式）"""
     print(f"\n📁 复制CSV文件到data目录... {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     # 确保data目录存在
@@ -97,9 +97,28 @@ def copy_csv_files():
             continue
 
         try:
-            shutil.copy(source, target)
-            lines = len(target.read_text().split('\n'))
-            print(f"✅ {name}数据已更新 ({lines} 行)")
+            # 读取源文件内容
+            source_content = source.read_text(encoding='utf-8-sig')
+            source_lines = source_content.strip().split('\n')
+
+            # 跳过表头，只保留数据行
+            data_lines = source_lines[1:] if len(source_lines) > 1 else []
+
+            if not data_lines:
+                print(f"⚠️  {name}源文件没有数据")
+                continue
+
+            # 如果目标文件不存在，创建并写入表头
+            if not target.exists():
+                target.write_text(source_content, encoding='utf-8-sig')
+                print(f"✅ {name}数据已创建 ({len(data_lines)} 行)")
+            else:
+                # 追加新数据（不包含表头）
+                with open(target, 'a', encoding='utf-8-sig') as f:
+                    for line in data_lines:
+                        f.write(line + '\n')
+                print(f"✅ {name}数据已追加 ({len(data_lines)} 行)")
+
         except Exception as e:
             print(f"❌ 复制{name}数据失败: {e}")
             all_success = False

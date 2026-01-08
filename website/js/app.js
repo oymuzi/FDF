@@ -5,6 +5,7 @@ const CONFIG = {
     branch: 'main'
 };
 
+// 添加时间戳避免缓存
 const BASE_URL = `https://raw.githubusercontent.com/${CONFIG.githubUsername}/${CONFIG.repoName}/${CONFIG.branch}/data/`;
 
 let mzData = [];
@@ -20,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Load CSV
 async function loadCSV(filename) {
-    const url = BASE_URL + filename;
+    // 添加时间戳参数避免缓存
+    const url = BASE_URL + filename + '?t=' + Date.now();
     try {
         const res = await fetch(url);
         if (!res.ok) throw new Error(res.status);
