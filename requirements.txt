@@ -1,0 +1,8 @@
+# Web3.py for blockchain interactions
+web3>=6.0.0
+
+# HTTP requests library
+requests>=2.31.0
+
+# Pandas for data processing (if needed)
+pandas>=2.0.0

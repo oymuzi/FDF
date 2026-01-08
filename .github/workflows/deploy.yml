@@ -3,7 +3,6 @@ name: 部署网站
 on:
   push:
     branches: [ main ]
-
   workflow_dispatch:
 
 permissions:
@@ -19,6 +18,9 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
       - name: 检出代码
@@ -33,4 +35,5 @@ jobs:
           path: ./website
 
       - name: 部署
+        id: deployment
         uses: actions/deploy-pages@v4
