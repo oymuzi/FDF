@@ -111,12 +111,11 @@ function getYesterdayLastValue(data) {
     if (!data || data.length === 0) return null;
 
     const lastEntry = data[data.length - 1];
-    const lastTime = lastEntry.时间;
+    const lastTime = new Date(lastEntry.时间);
 
-    // 获取当前时间的日期
-    const currentDate = new Date(lastTime);
-    const todayDate = new Date(currentDate);
-    todayDate.setHours(0, 0, 0, 0); // 今天00:00
+    // 获取今天00:00（使用UTC+8北京时间）
+    const todayDate = new Date(lastTime);
+    todayDate.setHours(0, 0, 0, 0);
 
     // 从后往前找，找到今天00:00之前的最后一条数据
     for (let i = data.length - 1; i >= 0; i--) {
@@ -124,6 +123,11 @@ function getYesterdayLastValue(data) {
         if (entryTime < todayDate) {
             return data[i];
         }
+    }
+
+    // 如果找不到昨天的数据，返回倒数第二条（前一次记录）
+    if (data.length >= 2) {
+        return data[data.length - 2];
     }
 
     return null;

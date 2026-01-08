@@ -1,0 +1,24 @@
+# FDF Dashboard 定时任务配置
+# 每小时运行一次数据更新并自动提交
+
+# 编辑 crontab:
+# crontab -e
+#
+# 查看当前的 crontab:
+# crontab -l
+#
+# 删除所有定时任务:
+# crontab -r
+
+# 每小时的第 5 分钟运行（避开整点高峰）
+5 * * * * cd /Users/oymuzi/blockchain/fdf && /Users/oymuzi/blockchain/fdf/scripts/run_and_commit.sh >> /Users/oymuzi/blockchain/fdf/logs/update.log 2>&1
+
+# 如果想整点运行，使用：
+# 0 * * * * cd /Users/oymuzi/blockchain/fdf && /Users/oymuzi/blockchain/fdf/scripts/run_and_commit.sh >> /Users/oymuzi/blockchain/fdf/logs/update.log 2>&1
+
+# 其他示例：
+# 每30分钟运行一次：
+# */30 * * * * cd /Users/oymuzi/blockchain/fdf && /Users/oymuzi/blockchain/fdf/scripts/run_and_commit.sh >> /Users/oymuzi/blockchain/fdf/logs/update.log 2>&1
+
+# 每天早上9点运行（北京时间）：
+# 0 1 * * * cd /Users/oymuzi/blockchain/fdf && /Users/oymuzi/blockchain/fdf/scripts/run_and_commit.sh >> /Users/oymuzi/blockchain/fdf/logs/update.log 2>&1
