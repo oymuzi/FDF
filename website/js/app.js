@@ -177,8 +177,22 @@ function createChart() {
             responsive: true,
             maintainAspectRatio: false,
             animation: {
-                duration: 2000,
-                easing: 'easeInOutQuart'
+                duration: 2500,
+                easing: 'easeInOutQuart',
+                // 从左到右绘制动画
+                x: {
+                    type: 'number',
+                    easing: 'linear',
+                    duration: 2500,
+                    from: NaN,
+                    delay(ctx) {
+                        if (ctx.type !== 'data' || ctx.xStarted) {
+                            return 0;
+                        }
+                        ctx.xStarted = true;
+                        return ctx.index * 50; // 每个点延迟50ms
+                    }
+                }
             },
             interaction: {
                 mode: 'index',
