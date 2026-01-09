@@ -2,7 +2,7 @@
 """
 FDF自动检查和提交脚本
 每小时运行一次：更新数据 + 检查变更 + 自动提交推送
-每个小时的 58分45秒 开始执行
+每个小时的 59分00秒 开始执行
 """
 
 import subprocess
@@ -18,16 +18,16 @@ DATA_DIR = FDF_DIR / 'data'
 
 
 def calculate_next_run_time():
-    """计算下一次执行时间(每个小时的58分45秒)"""
+    """计算下一次执行时间(每个小时的59分00秒)"""
     now = datetime.now()
 
-    # 计算下一个小时的58分45秒
-    if now.minute < 58 or (now.minute == 58 and now.second < 45):
-        # 如果还没到当前小时的58:45，就在当前小时执行
-        next_run = now.replace(minute=58, second=45, microsecond=0)
+    # 计算下一个小时的59分00秒
+    if now.minute < 59:
+        # 如果还没到当前小时的59:00，就在当前小时执行
+        next_run = now.replace(minute=59, second=0, microsecond=0)
     else:
         # 否则在下一个小时执行
-        next_run = (now.replace(minute=58, second=45, microsecond=0) + timedelta(hours=1))
+        next_run = (now.replace(minute=59, second=0, microsecond=0) + timedelta(hours=1))
 
     return next_run
 
@@ -129,7 +129,7 @@ def main():
     print("\n" + "="*60)
     print("🔄 FDF 自动检查和提交服务")
     print(f"启动时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print("执行频率: 每小时 58分45秒 运行一次")
+    print("执行频率: 每小时 59分00秒 运行一次")
     print("="*60)
 
     print("\n✅ 定时任务已启动，等待到下一个执行时间...")
