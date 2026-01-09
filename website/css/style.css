@@ -71,9 +71,10 @@ body {
 
 .fun-display {
     display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    padding: 0.6rem 0.9rem;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
     background: linear-gradient(135deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.08) 100%);
     border: 1px solid rgba(99, 102, 241, 0.25);
     border-radius: 12px;
@@ -81,6 +82,20 @@ body {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+}
+
+.fun-label {
+    color: rgba(99, 102, 241, 0.8);
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.fun-divider-inline {
+    width: 1px;
+    height: 16px;
+    background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.3) 50%, transparent 100%);
 }
 
 .logo h1 {
@@ -436,6 +451,12 @@ body {
 
     .fun-display {
         align-self: flex-start;
+        flex-direction: column;
+        gap: 0.4rem;
+    }
+
+    .fun-divider-inline {
+        display: none;
     }
 
     .update-time {
