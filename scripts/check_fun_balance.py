@@ -4,6 +4,7 @@
 支持 MZ 和 George 的所有地址
 """
 
+import time
 from web3 import Web3
 import json
 from typing import List, Dict
@@ -90,25 +91,38 @@ GEORGE_ADDRESSES = [
 FUN_CONTRACT = '0x16EE7ecAc70d1028E7712751E2Ee6BA808a7dd92'
 
 
-def get_fun_balance(address: str, contract) -> float:
+def get_fun_balance(address: str, contract, max_retries=3, retry_interval=2) -> float:
     """
     获取单个地址的 $FUN 余额
-    使用 web3.py 调用合约
+    使用 web3.py 调用合约，支持重试机制
     """
-    try:
-        # 标准化地址
-        checksum_addr = Web3.to_checksum_address(address)
+    for attempt in range(1, max_retries + 1):
+        try:
+            # 标准化地址
+            checksum_addr = Web3.to_checksum_address(address)
 
-        # 调用 balanceOf
-        balance_wei = contract.functions.balanceOf(checksum_addr).call()
+            # 调用 balanceOf
+            balance_wei = contract.functions.balanceOf(checksum_addr).call()
 
-        # $FUN 有 18 位小数
-        balance = balance_wei / 10**18
-        return balance
+            # $FUN 有 18 位小数
+            balance = balance_wei / 10**18
 
-    except Exception as e:
-        print(f"✗ {address[:10]}... 错误: {e}")
-        return 0.0
+            if attempt > 1:
+                print(f"✓ {address[:10]}... 第{attempt}次尝试成功")
+
+            return balance
+
+        except Exception as e:
+            print(f"✗ {address[:10]}... 第{attempt}/{max_retries}次尝试失败: {e}")
+
+            # 如果不是最后一次尝试，等待后重试
+            if attempt < max_retries:
+                print(f"  等待{retry_interval}秒后重试...")
+                time.sleep(retry_interval)
+
+    # 所有重试都失败
+    print(f"✗✗✗ {address[:10]}... 已重试{max_retries}次仍然失败，返回0")
+    return 0.0
 
 
 def check_all_balances(addresses: List[str], contract) -> Dict[str, float]:
@@ -138,55 +152,78 @@ def main():
     print(f"⏰ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("="*60)
 
-    # 连接到Base网络
-    w3 = Web3(Web3.HTTPProvider(BASE_RPC_URL))
-    if not w3.is_connected():
-        print("❌ 无法连接到Base网络")
-        return 1
+    try:
+        # 连接到Base网络
+        w3 = Web3(Web3.HTTPProvider(BASE_RPC_URL))
+        if not w3.is_connected():
+            print("❌ 无法连接到Base网络")
+            return 0  # 返回0表示成功，不影响主流程
 
-    # 创建 $FUN 合约实例
-    fun_contract = w3.eth.contract(
-        address=Web3.to_checksum_address(FUN_CONTRACT),
-        abi=FUN_ABI
-    )
+        # 创建 $FUN 合约实例
+        fun_contract = w3.eth.contract(
+            address=Web3.to_checksum_address(FUN_CONTRACT),
+            abi=FUN_ABI
+        )
 
-    # 检查 MZ 的余额
-    print("\n📊 检查 MZ 的地址...")
-    mz_balances = check_all_balances(MZ_ADDRESSES, fun_contract)
-    mz_total = sum(mz_balances.values())
+        # 检查 MZ 的余额
+        print("\n📊 检查 MZ 的地址...")
+        mz_balances = check_all_balances(MZ_ADDRESSES, fun_contract)
+        mz_total = sum(mz_balances.values())
 
-    print(f"\n✅ MZ 总计: {mz_total:.2f} $FUN")
-    print(f"   有余额地址数: {len(mz_balances)}")
+        print(f"\n✅ MZ 总计: {mz_total:.2f} $FUN")
+        print(f"   有余额地址数: {len(mz_balances)}")
 
-    # 检查 George 的余额
-    print("\n📊 检查 George 的地址...")
-    george_balances = check_all_balances(GEORGE_ADDRESSES, fun_contract)
-    george_total = sum(george_balances.values())
+        # 检查 George 的余额
+        print("\n📊 检查 George 的地址...")
+        george_balances = check_all_balances(GEORGE_ADDRESSES, fun_contract)
+        george_total = sum(george_balances.values())
 
-    print(f"\n✅ George 总计: {george_total:.2f} $FUN")
-    print(f"   有余额地址数: {len(george_balances)}")
+        print(f"\n✅ George 总计: {george_total:.2f} $FUN")
+        print(f"   有余额地址数: {len(george_balances)}")
 
-    # 保存结果到 JSON
-    result = {
-        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-        'mz': {
-            'total': mz_total,
-            'addresses': {addr: bal for addr, bal in mz_balances.items() if bal > 0}
-        },
-        'george': {
-            'total': george_total,
-            'addresses': {addr: bal for addr, bal in george_balances.items() if bal > 0}
+        # 保存结果到 JSON
+        result = {
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'mz': {
+                'total': mz_total,
+                'addresses': {addr: bal for addr, bal in mz_balances.items() if bal > 0}
+            },
+            'george': {
+                'total': george_total,
+                'addresses': {addr: bal for addr, bal in george_balances.items() if bal > 0}
+            }
         }
-    }
 
-    with open('data/fun_balance.json', 'w', encoding='utf-8') as f:
-        json.dump(result, f, indent=2, ensure_ascii=False)
+        with open('data/fun_balance.json', 'w', encoding='utf-8') as f:
+            json.dump(result, f, indent=2, ensure_ascii=False)
 
-    print(f"\n💾 结果已保存到 data/fun_balance.json")
-    print("="*60)
+        print(f"\n💾 结果已保存到 data/fun_balance.json")
+        print("="*60)
 
-    # 无论余额是否为0，都返回0（成功）
-    # 这样即使没有$FUN余额，也不会阻止主更新流程
+    except Exception as e:
+        print(f"\n❌ $FUN 余额检测发生异常: {e}")
+        print("⚠️  将保存空数据，不影响主流程")
+
+        # 保存空数据
+        result = {
+            'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'mz': {
+                'total': 0,
+                'addresses': {}
+            },
+            'george': {
+                'total': 0,
+                'addresses': {}
+            }
+        }
+
+        try:
+            with open('data/fun_balance.json', 'w', encoding='utf-8') as f:
+                json.dump(result, f, indent=2, ensure_ascii=False)
+        except:
+            pass  # 即使保存失败也不影响
+
+    # 无论成功失败，都返回0（成功），不影响主流程
     return 0
 
 
