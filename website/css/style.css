@@ -235,25 +235,24 @@ body {
     z-index: 1;
     padding: 0.2rem 0.6rem;
     border-radius: 8px;
-    backdrop-filter: blur(10px);
 }
 
 .stat-change.positive {
     color: #34d399;
-    background: rgba(52, 211, 153, 0.1);
-    border: 1px solid rgba(52, 211, 153, 0.2);
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.15) 0%, rgba(52, 211, 153, 0.05) 100%);
+    box-shadow: 0 2px 8px rgba(52, 211, 153, 0.15);
 }
 
 .stat-change.negative {
     color: #f87171;
-    background: rgba(248, 113, 113, 0.1);
-    border: 1px solid rgba(248, 113, 113, 0.2);
+    background: linear-gradient(135deg, rgba(248, 113, 113, 0.15) 0%, rgba(248, 113, 113, 0.05) 100%);
+    box-shadow: 0 2px 8px rgba(248, 113, 113, 0.15);
 }
 
 .stat-change.neutral {
     color: #94a3b8;
-    background: rgba(148, 163, 184, 0.1);
-    border: 1px solid rgba(148, 163, 184, 0.2);
+    background: linear-gradient(135deg, rgba(148, 163, 184, 0.15) 0%, rgba(148, 163, 184, 0.05) 100%);
+    box-shadow: 0 2px 8px rgba(148, 163, 184, 0.15);
 }
 
 /* Chart Section */
@@ -287,63 +286,59 @@ body {
 .chart-header-right {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    flex-wrap: wrap;
+    gap: 1.5rem;
 }
 
-/* Inline Legend */
-.chart-legend-inline {
+/* Legend Item */
+.chart-header-right .legend-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 1rem;
-    background: rgba(15, 23, 42, 0.5);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    gap: 0.4rem;
     font-size: 0.8125rem;
     color: var(--text-secondary);
     font-weight: 500;
 }
 
-.chart-legend-inline .legend-dot {
+.chart-header-right .legend-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
 }
 
-.chart-legend-inline .legend-dot.mz {
+.chart-header-right .legend-dot.mz {
     background: #6366f1;
     box-shadow: 0 0 6px rgba(99, 102, 241, 0.5);
 }
 
-.chart-legend-inline .legend-dot.wj {
+.chart-header-right .legend-dot.wj {
     background: #8b5cf6;
     box-shadow: 0 0 6px rgba(139, 92, 246, 0.5);
 }
 
 .chart-controls {
     display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 3rem;
+    margin-bottom: 1.5rem;
 }
 
 /* Segmented Control */
 .segmented-control {
     display: flex;
-    background: rgba(15, 23, 42, 0.5);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 3px;
-    gap: 3px;
+    background: transparent;
+    border: none;
+    padding: 0;
+    gap: 0;
 }
 
 .segment-btn {
     background: transparent;
     border: none;
-    padding: 0.35rem 0.75rem;
-    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
     color: var(--text-secondary);
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     font-family: inherit;
     cursor: pointer;
@@ -359,7 +354,7 @@ body {
 .segment-btn.active {
     background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
     color: white;
-    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.25);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
 }
 
 .segment-btn:active {
@@ -452,40 +447,35 @@ body {
     }
 
     .chart-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.75rem;
-    }
-
-    .chart-header h2 {
-        font-size: 1.125rem;
-    }
-
-    .chart-header-right {
-        width: 100%;
-        flex-direction: column;
-        gap: 0.75rem;
-        align-items: stretch;
-    }
-
-    .chart-legend-inline {
-        justify-content: center;
-        font-size: 0.75rem;
-        padding: 0.4rem 0.75rem;
-    }
-
-    .chart-controls {
-        justify-content: center;
+        flex-direction: row;
+        align-items: center;
         gap: 0.5rem;
     }
 
-    .segmented-control {
-        padding: 2px;
-        gap: 2px;
+    .chart-header h2 {
+        font-size: 1rem;
+    }
+
+    .chart-header-right {
+        gap: 0.75rem;
+    }
+
+    .chart-header-right .legend-item {
+        font-size: 0.6875rem;
+    }
+
+    .chart-header-right .legend-dot {
+        width: 6px;
+        height: 6px;
+    }
+
+    .chart-controls {
+        gap: 1.5rem;
+        margin-bottom: 1rem;
     }
 
     .segment-btn {
-        padding: 0.3rem 0.6rem;
+        padding: 0.35rem 0.6rem;
         font-size: 0.6875rem;
     }
 
