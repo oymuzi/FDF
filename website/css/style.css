@@ -81,6 +81,7 @@ body {
     display: flex;
     align-items: center;
     gap: 1rem;
+    margin-right: 1rem;
 }
 
 .update-time {
@@ -587,10 +588,11 @@ body {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
+    margin-left: auto;
 }
 
 .fun-display::before {
-    content: 'Airdrop';
+    content: '$FUN';
     position: absolute;
     top: 50%;
     left: 50%;
@@ -602,6 +604,29 @@ body {
     letter-spacing: 0.2em;
     pointer-events: none;
     z-index: 0;
+}
+
+.fun-display::after {
+    content: 'View $FUN';
+    position: absolute;
+    top: -20px;
+    right: 0;
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: rgba(99, 102, 241, 0.7);
+    background: rgba(15, 23, 42, 0.9);
+    padding: 0.2rem 0.5rem;
+    border-radius: 6px;
+    opacity: 0;
+    transition: opacity 0.3s ease, top 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.fun-display:hover::after {
+    opacity: 1;
+    top: -8px;
 }
 
 .fun-display:hover {
