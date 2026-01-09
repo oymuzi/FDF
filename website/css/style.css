@@ -48,6 +48,7 @@ body {
     align-items: center;
     padding-bottom: 2rem;
     border-bottom: 1px solid var(--border);
+    gap: 2rem;
 }
 
 .logo {
@@ -403,8 +404,12 @@ body {
     .header-content {
         flex-direction: column;
         gap: 0.75rem;
-        align-items: flex-start;
+        align-items: stretch;
         padding-bottom: 1rem;
+    }
+
+    .header-info {
+        align-self: flex-end;
     }
 
     .logo h1 {
