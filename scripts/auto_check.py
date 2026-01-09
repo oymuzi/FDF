@@ -132,12 +132,8 @@ def main():
     print("执行频率: 每小时 58分45秒 运行一次")
     print("="*60)
 
-    # 立即执行第一次
-    update_success = run_update()
-    if update_success:
-        check_and_commit()
-
-    print("\n✅ 定时任务已启动，按 Ctrl+C 停止...")
+    print("\n✅ 定时任务已启动，等待到下一个执行时间...")
+    print("按 Ctrl+C 停止...")
 
     # 持续运行
     while True:
@@ -147,23 +143,16 @@ def main():
             now = datetime.now()
             wait_seconds = (next_run - now).total_seconds()
 
-            if wait_seconds > 0:
-                print(f"\n⏰ 下次执行: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
-                print(f"⏳ 等待: {int(wait_seconds)}秒 ({int(wait_seconds/60)}分{int(wait_seconds%60)}秒)")
+            print(f"\n⏰ 下次执行: {next_run.strftime('%Y-%m-%d %H:%M:%S')}")
+            print(f"⏳ 等待: {int(wait_seconds)}秒 ({int(wait_seconds/60)}分{int(wait_seconds%60)}秒)")
 
-                # 等待到下次执行时间
-                time.sleep(wait_seconds)
+            # 等待到下次执行时间
+            time.sleep(wait_seconds)
 
-                # 执行更新和提交
-                update_success = run_update()
-                if update_success:
-                    check_and_commit()
-            else:
-                # 如果计算时间已过,立即执行并重新计算
-                print("⚠️  执行时间已到,开始执行...")
-                update_success = run_update()
-                if update_success:
-                    check_and_commit()
+            # 执行更新和提交
+            update_success = run_update()
+            if update_success:
+                check_and_commit()
 
         except KeyboardInterrupt:
             print("\n\n⚠️  用户中断，停止定时任务...")
