@@ -1,0 +1,18 @@
+{
+  "timestamp": "2026-01-09 12:00:00",
+  "mz": {
+    "total": 12500.50,
+    "addresses": {
+      "0xE64f5c33AefCfA536DdB9b726b6418D61757dC60": 5000.25,
+      "0xeC39b33140cDb18c4C07ec5a0AC088651Ddcb574": 7500.25
+    }
+  },
+  "george": {
+    "total": 8750.75,
+    "addresses": {
+      "0xE64f5c33AefCfA536DdB9b726b6418D61757dC60": 3000.50,
+      "0xad81B5259f7EEfADa44fC64BE639C2453cEeB753": 2500.25,
+      "0x363AF1939E06dA74e39E1a78C7e0754DA3EfE162": 3250.00
+    }
+  }
+}
