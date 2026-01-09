@@ -413,8 +413,8 @@ function updateFunDisplay() {
     display.style.display = 'flex';
 
     // 更新数值
-    document.getElementById('mzFun').textContent = mzTotal.toFixed(2);
-    document.getElementById('georgeFun').textContent = georgeTotal.toFixed(2);
+    document.getElementById('mzFun').textContent = mzTotal.toFixed(18);
+    document.getElementById('georgeFun').textContent = georgeTotal.toFixed(18);
 
     // 添加点击事件
     display.onclick = openFunModal;
@@ -457,7 +457,7 @@ function renderFunDetails() {
     const data = funData[person];
 
     // 更新总计
-    document.getElementById('funSummary').textContent = '总计: ' + data.total.toFixed(2) + ' $FUN';
+    document.getElementById('funSummary').textContent = '总计: ' + data.total.toFixed(18) + ' $FUN';
 
     // 渲染地址列表
     const listEl = document.getElementById('funAddressList');
@@ -473,7 +473,7 @@ function renderFunDetails() {
     listEl.innerHTML = sortedAddrs.map(([addr, bal]) => `
         <div class="fun-address-item">
             <div class="fun-addr">${addr}</div>
-            <div class="fun-addr-bal">${bal.toFixed(2)} $FUN</div>
+            <div class="fun-addr-bal">${bal.toFixed(18)} $FUN</div>
         </div>
     `).join('');
 }
