@@ -54,7 +54,7 @@ body {
 .update-time {
     color: var(--text-secondary);
     font-size: 0.875rem;
-    order: 1;
+    order: 3;
 }
 
 .logo {
@@ -404,18 +404,18 @@ body {
     }
 
     .update-time {
-        order: 1;
-        align-self: flex-start;
+        order: 2;
+        align-self: flex-end;
     }
 
     .logo {
-        order: 2;
+        order: 1;
         align-self: center;
     }
 
     .fun-display {
         order: 3;
-        align-self: flex-end;
+        align-self: flex-start;
     }
 
     .logo h1 {
@@ -599,7 +599,7 @@ body {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    margin-left: auto;
+    order: 1;
 }
 
 .fun-display::before {
