@@ -19,6 +19,34 @@ document.addEventListener('DOMContentLoaded', () => {
     loadData();
 });
 
+// Set time range
+function setTimeRange(value) {
+    // Update button states
+    const buttons = document.querySelectorAll('#timeRangeControl .segment-btn');
+    buttons.forEach(btn => {
+        if (btn.dataset.value === value) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    updateChart();
+}
+
+// Set account filter
+function setAccountFilter(value) {
+    // Update button states
+    const buttons = document.querySelectorAll('#accountFilterControl .segment-btn');
+    buttons.forEach(btn => {
+        if (btn.dataset.value === value) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    updateChart();
+}
+
 // Load CSV
 async function loadCSV(filename) {
     // 添加时间戳参数避免缓存
@@ -181,8 +209,11 @@ function createChart() {
     const ctx = document.getElementById('mainChart')?.getContext('2d');
     if (!ctx) return;
 
-    const timeRange = document.getElementById('timeRange')?.value || 'W';
-    const accountFilter = document.getElementById('accountFilter')?.value || 'All';
+    // 从激活的按钮获取当前值
+    const timeRangeBtn = document.querySelector('#timeRangeControl .segment-btn.active');
+    const accountFilterBtn = document.querySelector('#accountFilterControl .segment-btn.active');
+    const timeRange = timeRangeBtn?.dataset.value || 'W';
+    const accountFilter = accountFilterBtn?.dataset.value || 'All';
 
     // 过滤时间范围
     let filteredMz = filterDataByTimeRange(mzData, timeRange);

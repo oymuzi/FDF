@@ -42,27 +42,33 @@
             </div>
         </div>
 
+        <!-- Chart Legend -->
+        <div class="chart-legend-bar">
+            <div class="legend-item">
+                <span class="legend-dot mz"></span>
+                <span>MZ</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-dot wj"></span>
+                <span>George</span>
+            </div>
+        </div>
+
         <!-- Chart Section -->
         <div class="chart-section">
             <div class="chart-card">
                 <div class="chart-header">
                     <h2>Portfolio Performance</h2>
                     <div class="chart-controls">
-                        <div class="control-group">
-                            <label>时间范围:</label>
-                            <select id="timeRange" onchange="updateChart()">
-                                <option value="D">近24小时</option>
-                                <option value="W" selected>近一周</option>
-                                <option value="All">所有</option>
-                            </select>
+                        <div class="segmented-control" id="timeRangeControl">
+                            <button class="segment-btn" data-value="D" onclick="setTimeRange('D')">24H</button>
+                            <button class="segment-btn active" data-value="W" onclick="setTimeRange('W')">1W</button>
+                            <button class="segment-btn" data-value="All" onclick="setTimeRange('All')">All</button>
                         </div>
-                        <div class="control-group">
-                            <label>账号:</label>
-                            <select id="accountFilter" onchange="updateChart()">
-                                <option value="All" selected>全部</option>
-                                <option value="MZ">MZ</option>
-                                <option value="GEORGE">George</option>
-                            </select>
+                        <div class="segmented-control" id="accountFilterControl">
+                            <button class="segment-btn active" data-value="All" onclick="setAccountFilter('All')">All</button>
+                            <button class="segment-btn" data-value="MZ" onclick="setAccountFilter('MZ')">MZ</button>
+                            <button class="segment-btn" data-value="GEORGE" onclick="setAccountFilter('GEORGE')">George</button>
                         </div>
                     </div>
                 </div>
