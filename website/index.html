@@ -47,14 +47,22 @@
             <div class="chart-card">
                 <div class="chart-header">
                     <h2>Portfolio Performance</h2>
-                    <div class="chart-legend">
-                        <div class="legend-item">
-                            <span class="legend-dot mz"></span>
-                            <span>MZ</span>
+                    <div class="chart-controls">
+                        <div class="control-group">
+                            <label>时间范围:</label>
+                            <select id="timeRange" onchange="updateChart()">
+                                <option value="D">近24小时</option>
+                                <option value="W" selected>近一周</option>
+                                <option value="All">所有</option>
+                            </select>
                         </div>
-                        <div class="legend-item">
-                            <span class="legend-dot wj"></span>
-                            <span>George</span>
+                        <div class="control-group">
+                            <label>账号:</label>
+                            <select id="accountFilter" onchange="updateChart()">
+                                <option value="All" selected>全部</option>
+                                <option value="MZ">MZ</option>
+                                <option value="GEORGE">George</option>
+                            </select>
                         </div>
                     </div>
                 </div>

@@ -275,7 +275,7 @@ body {
     align-items: center;
     margin-bottom: 1rem;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .chart-header h2 {
@@ -284,32 +284,44 @@ body {
     color: var(--text-primary);
 }
 
-.chart-legend {
+.chart-controls {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     flex-wrap: wrap;
 }
 
-.legend-item {
+.control-group {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+}
+
+.control-group label {
     font-size: 0.875rem;
     color: var(--text-secondary);
+    font-weight: 500;
 }
 
-.legend-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
+.control-group select {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    outline: none;
 }
 
-.legend-dot.mz {
-    background: #6366f1;
+.control-group select:hover {
+    border-color: rgba(99, 102, 241, 0.4);
 }
 
-.legend-dot.wj {
-    background: #8b5cf6;
+.control-group select:focus {
+    border-color: rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
 .chart-container {

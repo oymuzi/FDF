@@ -141,24 +141,80 @@ function updateStatChange(id, val) {
     el.className = `stat-change ${num > 0 ? 'positive' : num < 0 ? 'negative' : 'neutral'}`;
 }
 
+// Filter data by time range
+function filterDataByTimeRange(data, range) {
+    if (!data || data.length === 0) return data;
+
+    const now = new Date();
+    let startTime;
+
+    switch (range) {
+        case 'D':  // 近24小时
+            startTime = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+            break;
+        case 'W':  // 近一周
+            startTime = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+            break;
+        case 'All':  // 所有
+        default:
+            return data;
+    }
+
+    return data.filter(d => d.时间 >= startTime);
+}
+
+// Filter data by account
+function filterDataByAccount(mzData, wjData, account) {
+    switch (account) {
+        case 'MZ':
+            return { mzData, wjData: [] };
+        case 'GEORGE':
+            return { mzData: [], wjData };
+        case 'All':
+        default:
+            return { mzData, wjData };
+    }
+}
+
 // Create chart
 function createChart() {
     const ctx = document.getElementById('mainChart')?.getContext('2d');
     if (!ctx) return;
 
-    // 对齐两个数据集，使用共同的时间范围
-    const mzStartTime = mzData[0]?.时间.getTime();
-    const mzEndTime = mzData[mzData.length - 1]?.时间.getTime();
-    const wjStartTime = wjData[0]?.时间.getTime();
-    const wjEndTime = wjData[wjData.length - 1]?.时间.getTime();
+    const timeRange = document.getElementById('timeRange')?.value || 'W';
+    const accountFilter = document.getElementById('accountFilter')?.value || 'All';
 
-    // 使用较晚的开始时间和较早的结束时间
-    const alignedStart = Math.max(mzStartTime, wjStartTime);
-    const alignedEnd = Math.min(mzEndTime, wjEndTime);
+    // 过滤时间范围
+    let filteredMz = filterDataByTimeRange(mzData, timeRange);
+    let filteredWj = filterDataByTimeRange(wjData, timeRange);
+
+    // 过滤账号
+    const filtered = filterDataByAccount(filteredMz, filteredWj, accountFilter);
+    filteredMz = filtered.mzData;
+    filteredWj = filtered.wjData;
+
+    // 对齐两个数据集，使用共同的时间范围
+    const mzStartTime = filteredMz[0]?.时间.getTime();
+    const mzEndTime = filteredMz[filteredMz.length - 1]?.时间.getTime();
+    const wjStartTime = filteredWj[0]?.时间.getTime();
+    const wjEndTime = filteredWj[filteredWj.length - 1]?.时间.getTime();
+
+    // 如果某个数据集为空，使用另一个数据集的时间范围
+    let alignedStart, alignedEnd;
+    if (filteredMz.length === 0) {
+        alignedStart = wjStartTime;
+        alignedEnd = wjEndTime;
+    } else if (filteredWj.length === 0) {
+        alignedStart = mzStartTime;
+        alignedEnd = mzEndTime;
+    } else {
+        alignedStart = Math.max(mzStartTime, wjStartTime);
+        alignedEnd = Math.min(mzEndTime, wjEndTime);
+    }
 
     // 过滤数据，确保在共同时间范围内
-    const alignedMz = mzData.filter(d => d.时间.getTime() >= alignedStart && d.时间.getTime() <= alignedEnd);
-    const alignedWj = wjData.filter(d => d.时间.getTime() >= alignedStart && d.时间.getTime() <= alignedEnd);
+    const alignedMz = filteredMz.filter(d => d.时间.getTime() >= alignedStart && d.时间.getTime() <= alignedEnd);
+    const alignedWj = filteredWj.filter(d => d.时间.getTime() >= alignedStart && d.时间.getTime() <= alignedEnd);
 
     // 使用两个数据集的时间并集作为标签（按时间排序）
     const allTimes = new Set();
@@ -176,38 +232,44 @@ function createChart() {
     const mzAlignedData = sortedTimes.map(t => mzMap.get(t) || null);
     const wjAlignedData = sortedTimes.map(t => wjMap.get(t) || null);
 
+    // 创建datasets
+    const datasets = [];
+    if (filteredMz.length > 0) {
+        datasets.push({
+            label: 'MZ',
+            data: mzAlignedData,
+            borderColor: '#6366f1',
+            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 0,
+            pointHoverRadius: 6,
+            pointHoverBackgroundColor: '#6366f1',
+            spanGaps: true
+        });
+    }
+    if (filteredWj.length > 0) {
+        datasets.push({
+            label: 'George',
+            data: wjAlignedData,
+            borderColor: '#8b5cf6',
+            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+            borderWidth: 3,
+            fill: true,
+            tension: 0.4,
+            pointRadius: 0,
+            pointHoverRadius: 6,
+            pointHoverBackgroundColor: '#8b5cf6',
+            spanGaps: true
+        });
+    }
+
     mainChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels,
-            datasets: [
-                {
-                    label: 'MZ',
-                    data: mzAlignedData,
-                    borderColor: '#6366f1',
-                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 0,
-                    pointHoverRadius: 6,
-                    pointHoverBackgroundColor: '#6366f1',
-                    spanGaps: true  // 连接空值
-                },
-                {
-                    label: 'George',
-                    data: wjAlignedData,
-                    borderColor: '#8b5cf6',
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 0,
-                    pointHoverRadius: 6,
-                    pointHoverBackgroundColor: '#8b5cf6',
-                    spanGaps: true  // 连接空值
-                }
-            ]
+            datasets
         },
         options: {
             responsive: true,
@@ -275,6 +337,14 @@ function createChart() {
             }
         }
     });
+}
+
+// Update chart
+function updateChart() {
+    if (mainChart) {
+        mainChart.destroy();
+    }
+    createChart();
 }
 
 // Refresh

@@ -412,7 +412,7 @@ if __name__ == "__main__":
     # for addr, bal in owner_account_result.items():
     #     if addr != 'total':
     #         print(f"{addr} 链上地址余额 {bal:.2f} USDC")
-    owner_total = 303 #owner_account_result['total']
+    owner_total = 303.00 #owner_account_result['total']
     game_account_result = get_usdc_balances(game_wallet_list)
     for addr, bal in game_account_result.items():
         if addr != 'total':
