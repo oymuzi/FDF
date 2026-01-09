@@ -410,20 +410,20 @@ function updateFunDisplay() {
 
     // 如果两人都为0，隐藏显示
     if (mzTotal === 0 && georgeTotal === 0) {
-        document.getElementById('funDisplay').style.display = 'none';
+        document.getElementById('airdropCard').style.display = 'none';
         return;
     }
 
-    // 显示FUN区域
-    const display = document.getElementById('funDisplay');
-    display.style.display = 'flex';
+    // 显示空投卡片
+    const card = document.getElementById('airdropCard');
+    card.style.display = 'flex';
 
     // 更新数值（显示2位小数，保持可读性）
     document.getElementById('mzFun').textContent = formatNumber(mzTotal);
     document.getElementById('georgeFun').textContent = formatNumber(georgeTotal);
 
     // 添加点击事件
-    display.onclick = openFunModal;
+    card.onclick = openFunModal;
 }
 
 // Open FUN modal
