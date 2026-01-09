@@ -378,6 +378,121 @@ function updateChart() {
     createChart();
 }
 
+// FUN Balance
+let funData = null;
+let currentFunPerson = 'mz';
+
+// Load FUN balance data
+async function loadFunBalance() {
+    try {
+        const url = BASE_URL + 'fun_balance.json?t=' + Date.now();
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(res.status);
+        funData = await res.json();
+        updateFunDisplay();
+    } catch (err) {
+        console.log('FUN余额数据加载失败:', err);
+    }
+}
+
+// Update FUN display in header
+function updateFunDisplay() {
+    if (!funData) return;
+
+    const mzTotal = funData.mz.total;
+    const georgeTotal = funData.george.total;
+
+    // 如果两人都为0，隐藏显示
+    if (mzTotal === 0 && georgeTotal === 0) {
+        document.getElementById('funDisplay').style.display = 'none';
+        return;
+    }
+
+    // 显示FUN区域
+    const display = document.getElementById('funDisplay');
+    display.style.display = 'flex';
+
+    // 更新数值
+    document.getElementById('mzFun').textContent = mzTotal.toFixed(2);
+    document.getElementById('georgeFun').textContent = georgeTotal.toFixed(2);
+
+    // 添加点击事件
+    display.onclick = openFunModal;
+}
+
+// Open FUN modal
+function openFunModal() {
+    const modal = document.getElementById('funModal');
+    modal.style.display = 'flex';
+    renderFunDetails();
+}
+
+// Close FUN modal
+function closeFunModal() {
+    const modal = document.getElementById('funModal');
+    modal.style.display = 'none';
+}
+
+// Switch FUN tab
+function switchFunTab(person) {
+    currentFunPerson = person;
+
+    // 更新tab状态
+    document.querySelectorAll('.fun-tab').forEach(tab => {
+        if (tab.dataset.person === person) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+
+    renderFunDetails();
+}
+
+// Render FUN details
+function renderFunDetails() {
+    if (!funData) return;
+
+    const person = currentFunPerson;
+    const data = funData[person];
+
+    // 更新总计
+    document.getElementById('funSummary').textContent = '总计: ' + data.total.toFixed(2) + ' $FUN';
+
+    // 渲染地址列表
+    const listEl = document.getElementById('funAddressList');
+    const addresses = data.addresses;
+
+    if (Object.keys(addresses).length === 0) {
+        listEl.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 2rem;">暂无余额</div>';
+        return;
+    }
+
+    const sortedAddrs = Object.entries(addresses).sort((a, b) => b[1] - a[1]);
+
+    listEl.innerHTML = sortedAddrs.map(([addr, bal]) => `
+        <div class="fun-address-item">
+            <div class="fun-addr">${addr}</div>
+            <div class="fun-addr-bal">${bal.toFixed(2)} $FUN</div>
+        </div>
+    `).join('');
+}
+
+// 点击模态框外部关闭
+window.onclick = function(event) {
+    const modal = document.getElementById('funModal');
+    if (event.target === modal) {
+        closeFunModal();
+    }
+}
+
+// 在loadData中调用loadFunBalance
+const originalLoadData = loadData;
+loadData = async function() {
+    await originalLoadData();
+    await loadFunBalance();
+};
+
 // Refresh
 async function refreshData() {
     console.log('🔄 Refreshing...');
