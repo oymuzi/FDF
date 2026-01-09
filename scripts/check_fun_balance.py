@@ -111,7 +111,7 @@ def get_fun_balance(address: str, contract) -> float:
         return 0.0
 
 
-def check_all_balances(addresses: List[str]) -> Dict[str, float]:
+def check_all_balances(addresses: List[str], contract) -> Dict[str, float]:
     """
     检查所有地址的 $FUN 余额
     返回 {地址: 余额} 字典
@@ -121,7 +121,7 @@ def check_all_balances(addresses: List[str]) -> Dict[str, float]:
     print(f"\n开始检查 {len(addresses)} 个地址的 $FUN 余额...")
 
     for i, address in enumerate(addresses, 1):
-        balance = get_fun_balance(address)
+        balance = get_fun_balance(address, contract)
         if balance > 0:
             balances[address] = balance
             print(f"[{i}/{len(addresses)}] {address[:10]}... : {balance:.2f} $FUN")
@@ -138,9 +138,21 @@ def main():
     print(f"⏰ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("="*60)
 
+    # 连接到Base网络
+    w3 = Web3(Web3.HTTPProvider(BASE_RPC_URL))
+    if not w3.is_connected():
+        print("❌ 无法连接到Base网络")
+        return 1
+
+    # 创建 $FUN 合约实例
+    fun_contract = w3.eth.contract(
+        address=Web3.to_checksum_address(FUN_CONTRACT),
+        abi=FUN_ABI
+    )
+
     # 检查 MZ 的余额
     print("\n📊 检查 MZ 的地址...")
-    mz_balances = check_all_balances(MZ_ADDRESSES)
+    mz_balances = check_all_balances(MZ_ADDRESSES, fun_contract)
     mz_total = sum(mz_balances.values())
 
     print(f"\n✅ MZ 总计: {mz_total:.2f} $FUN")
@@ -148,7 +160,7 @@ def main():
 
     # 检查 George 的余额
     print("\n📊 检查 George 的地址...")
-    george_balances = check_all_balances(GEORGE_ADDRESSES)
+    george_balances = check_all_balances(GEORGE_ADDRESSES, fun_contract)
     george_total = sum(george_balances.values())
 
     print(f"\n✅ George 总计: {george_total:.2f} $FUN")
