@@ -42,33 +42,29 @@
             </div>
         </div>
 
-        <!-- Chart Legend -->
-        <div class="chart-legend-bar">
-            <div class="legend-item">
-                <span class="legend-dot mz"></span>
-                <span>MZ</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-dot wj"></span>
-                <span>George</span>
-            </div>
-        </div>
-
         <!-- Chart Section -->
         <div class="chart-section">
             <div class="chart-card">
                 <div class="chart-header">
                     <h2>Portfolio Performance</h2>
-                    <div class="chart-controls">
-                        <div class="segmented-control" id="timeRangeControl">
-                            <button class="segment-btn" data-value="D" onclick="setTimeRange('D')">24H</button>
-                            <button class="segment-btn active" data-value="W" onclick="setTimeRange('W')">1W</button>
-                            <button class="segment-btn" data-value="All" onclick="setTimeRange('All')">All</button>
+                    <div class="chart-header-right">
+                        <div class="chart-legend-inline">
+                            <span class="legend-dot mz"></span>
+                            <span>MZ</span>
+                            <span class="legend-dot wj"></span>
+                            <span>George</span>
                         </div>
-                        <div class="segmented-control" id="accountFilterControl">
-                            <button class="segment-btn active" data-value="All" onclick="setAccountFilter('All')">All</button>
-                            <button class="segment-btn" data-value="MZ" onclick="setAccountFilter('MZ')">MZ</button>
-                            <button class="segment-btn" data-value="GEORGE" onclick="setAccountFilter('GEORGE')">George</button>
+                        <div class="chart-controls">
+                            <div class="segmented-control" id="timeRangeControl">
+                                <button class="segment-btn" data-value="D" onclick="setTimeRange('D')">24H</button>
+                                <button class="segment-btn active" data-value="W" onclick="setTimeRange('W')">1W</button>
+                                <button class="segment-btn" data-value="All" onclick="setTimeRange('All')">All</button>
+                            </div>
+                            <div class="segmented-control" id="accountFilterControl">
+                                <button class="segment-btn active" data-value="All" onclick="setAccountFilter('All')">All</button>
+                                <button class="segment-btn" data-value="MZ" onclick="setAccountFilter('MZ')">MZ</button>
+                                <button class="segment-btn" data-value="GEORGE" onclick="setAccountFilter('GEORGE')">George</button>
+                            </div>
                         </div>
                     </div>
                 </div>
