@@ -93,7 +93,7 @@ def check_and_commit():
             subprocess.run(['git', 'add', 'data/'], cwd=str(FDF_DIR))
 
             # 提交
-            commit_msg = f"更新数据 [skip_ci]\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>"
+            commit_msg = f"🤖自动更新数据"
             subprocess.run(
                 ['git', 'commit', '-m', commit_msg],
                 cwd=str(FDF_DIR)

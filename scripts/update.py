@@ -22,6 +22,7 @@ def run_account_checks():
     scripts_to_run = [
         ('check_account_balance.py', 'MZ账号'),
         ('check_wj_account_balance.py', 'George账号'),
+        ('check_fun_balance.py', '$FUN余额'),
     ]
 
     all_success = True

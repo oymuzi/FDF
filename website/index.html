@@ -19,6 +19,15 @@
                 </div>
                 <div class="header-info">
                     <span class="update-time" id="updateTime">Loading...</span>
+                    <div class="fun-display" id="funDisplay" style="display: none;">
+                        <span class="fun-item">
+                            <span class="fun-label">Airdrop</span>
+                            <span class="fun-value" id="mzFun">--</span>
+                        </span>
+                        <span class="fun-item">
+                            <span class="fun-value" id="georgeFun">--</span>
+                        </span>
+                    </div>
                 </div>
             </div>
         </header>
@@ -80,6 +89,26 @@
         <footer class="footer">
             <p>Built with ❤️ | FDF Dashboard © 2026</p>
         </footer>
+    </div>
+
+    <!-- FUN 详情弹窗 -->
+    <div class="modal" id="funModal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>$FUN Airdrop 详情</h2>
+                <button class="modal-close" onclick="closeFunModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="fun-tabs">
+                    <button class="fun-tab active" data-person="mz" onclick="switchFunTab('mz')">MZ</button>
+                    <button class="fun-tab" data-person="george" onclick="switchFunTab('george')">George</button>
+                </div>
+                <div class="fun-summary" id="funSummary">总计: -- $FUN</div>
+                <div class="fun-address-list" id="funAddressList">
+                    <!-- 动态填充 -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/app.js"></script>
