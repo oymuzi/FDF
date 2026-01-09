@@ -378,6 +378,12 @@ function updateChart() {
     createChart();
 }
 
+// Format number with 2 decimals
+function formatNumber(num) {
+    if (!num || num === 0) return '0.00';
+    return parseFloat(num).toFixed(2);
+}
+
 // FUN Balance
 let funData = null;
 let currentFunPerson = 'mz';
@@ -412,9 +418,9 @@ function updateFunDisplay() {
     const display = document.getElementById('funDisplay');
     display.style.display = 'flex';
 
-    // 更新数值
-    document.getElementById('mzFun').textContent = mzTotal.toFixed(18);
-    document.getElementById('georgeFun').textContent = georgeTotal.toFixed(18);
+    // 更新数值（显示2位小数，保持可读性）
+    document.getElementById('mzFun').textContent = formatNumber(mzTotal);
+    document.getElementById('georgeFun').textContent = formatNumber(georgeTotal);
 
     // 添加点击事件
     display.onclick = openFunModal;
@@ -456,8 +462,8 @@ function renderFunDetails() {
     const person = currentFunPerson;
     const data = funData[person];
 
-    // 更新总计
-    document.getElementById('funSummary').textContent = '总计: ' + data.total.toFixed(18) + ' $FUN';
+    // 更新总计（显示2位小数）
+    document.getElementById('funSummary').textContent = '总计: ' + formatNumber(data.total) + ' $FUN';
 
     // 渲染地址列表
     const listEl = document.getElementById('funAddressList');
@@ -473,7 +479,7 @@ function renderFunDetails() {
     listEl.innerHTML = sortedAddrs.map(([addr, bal]) => `
         <div class="fun-address-item">
             <div class="fun-addr">${addr}</div>
-            <div class="fun-addr-bal">${bal.toFixed(18)} $FUN</div>
+            <div class="fun-addr-bal">${formatNumber(bal)} $FUN</div>
         </div>
     `).join('');
 }
