@@ -51,10 +51,17 @@ body {
     gap: 2rem;
 }
 
+.update-time {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    order: 1;
+}
+
 .logo {
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    order: 2;
 }
 
 .logo h1 {
@@ -76,18 +83,6 @@ body {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-}
-
-.header-info {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-right: 1rem;
-}
-
-.update-time {
-    color: var(--text-secondary);
-    font-size: 0.875rem;
 }
 
 /* Stats Grid - 全新设计 */
@@ -408,7 +403,18 @@ body {
         padding-bottom: 1rem;
     }
 
-    .header-info {
+    .update-time {
+        order: 1;
+        align-self: flex-start;
+    }
+
+    .logo {
+        order: 2;
+        align-self: center;
+    }
+
+    .fun-display {
+        order: 3;
         align-self: flex-end;
     }
 
