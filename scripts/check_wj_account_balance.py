@@ -433,4 +433,4 @@ if __name__ == "__main__":
     total = owner_total + game_total + holding_total
     print(f"总价值: {total:.2f} USDC")
     write_balance_history(owner_total, game_total, holding_total)
-    send(owner_total, game_total, holding_total)
+    # send(owner_total, game_total, holding_total)
