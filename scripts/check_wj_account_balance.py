@@ -116,6 +116,19 @@ import requests
 import time
 import random
 
+def get_current_hour_time():
+    """
+    获取当前整点时间
+    如果分钟数>=30,返回下一小时整点;否则返回当前小时整点
+    """
+    now = datetime.now()
+    if now.minute >= 30:
+        # 下一小时整点
+        return (now.replace(minute=0, second=0, microsecond=0) + timedelta(hours=1)).strftime("%Y-%m-%d %H:%M:%S")
+    else:
+        # 当前小时整点
+        return now.replace(minute=0, second=0, microsecond=0).strftime("%Y-%m-%d %H:%M:%S")
+
 # List of sample User-Agent strings to randomize
 user_agents = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -248,7 +261,7 @@ def write_balance_history(balance: float, gold_balance: float, holding_value: fl
     total_value = balance + gold_balance + holding_value
 
     # 准备数据行
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    current_time = get_current_hour_time()
     row_data = {
         "时间": current_time,
         "链上余额": f"{balance:.2f}",
