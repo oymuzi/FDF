@@ -9,6 +9,10 @@ from web3 import Web3
 import json
 from typing import List, Dict
 from datetime import datetime
+from urllib.parse import quote
+import requests
+import time
+import random
 
 # Base网络RPC端点
 BASE_RPC_URL = "https://base.gateway.tenderly.co/7f0UNrRDYc9KIKb37mopLL"
@@ -144,6 +148,17 @@ def check_all_balances(addresses: List[str], contract) -> Dict[str, float]:
 
     return balances
 
+def send_airdrop(type, total, count):
+    title = f"恭喜！FDF发空投啦~ "
+    content = f"总共{total} $FUN 共有{count}个账号获取了空投"
+    message = quote(f"{title}/{content}")
+    token = "89ADUXPYHnYeoW85XFAsaD" if type == 0 else "NB9EBMYHCd3mRwqaqquvP5"
+    url = f"https://api.day.app/{token}/{message}?isArchive=1&sound=minuet&icon=https://s2.loli.net/2025/12/31/2LT4GfJ8gc59jaw.png"
+    try:
+        response = requests.get(url)
+    except Exception as e:
+        pass
+
 
 def main():
     """主函数"""
@@ -173,6 +188,9 @@ def main():
         print(f"\n✅ MZ 总计: {mz_total:.2f} $FUN")
         print(f"   有余额地址数: {len(mz_balances)}")
 
+        if mz_total > 0:
+            send_airdrop(0, mz_total, len(mz_balances))
+
         # 检查 George 的余额
         print("\n📊 检查 George 的地址...")
         george_balances = check_all_balances(GEORGE_ADDRESSES, fun_contract)
@@ -180,6 +198,9 @@ def main():
 
         print(f"\n✅ George 总计: {george_total:.2f} $FUN")
         print(f"   有余额地址数: {len(george_balances)}")
+
+        if george_total > 0:
+            send_airdrop(1, george_total, len(george_balances))
 
         # 保存结果到 JSON
         result = {
