@@ -1,10 +1,8 @@
 {
-  "timestamp": "2026-01-16 21:00:39",
+  "timestamp": "2026-01-16 23:01:01",
   "mz": {
-    "total": 2656.0,
+    "total": 2458.0,
     "addresses": {
-      "0xeC39b33140cDb18c4C07ec5a0AC088651Ddcb574": 101.0,
-      "0xad81B5259f7EEfADa44fC64BE639C2453cEeB753": 97.0,
       "0x363AF1939E06dA74e39E1a78C7e0754DA3EfE162": 92.0,
       "0xCaf2A5D353CF0F3CadeC75E97b8c8196bc4C64fb": 112.0,
       "0x04f24C62A4e2589f41648C1197fc69Dce0a95A1e": 97.0,
