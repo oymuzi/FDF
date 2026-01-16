@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-16 18:00:59",
+  "timestamp": "2026-01-16 19:00:39",
   "mz": {
     "total": 2656.0,
     "addresses": {
@@ -27,12 +27,7 @@
     }
   },
   "george": {
-    "total": 434.0,
-    "addresses": {
-      "0x670B62634404E72F465f088b3A7e01E032B9C568": 86.0,
-      "0x1d52582edeC201EF6B8Ed588C1eE9e90Db9d09F7": 159.0,
-      "0xeed210f175757D2020bD35C1DBc15Fc8a65b60c9": 75.0,
-      "0x587c3743bC3EFf4A7D515B58C2B23b52615f8824": 114.0
-    }
+    "total": 0,
+    "addresses": {}
   }
 }
